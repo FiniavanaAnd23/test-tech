@@ -3,18 +3,35 @@
 import { use } from "react";
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { ChevronLeft, ShoppingCart, Eye } from "lucide-react";
-import { useCart } from "@/lib/cart-context"; // suppose que tu as ce context
+import { ChevronLeft, ShoppingCart } from "lucide-react";
+import { useCart } from "@/lib/cart-context";
+
+import { Canvas } from "@react-three/fiber";
+import {
+  OrbitControls,
+  Environment,
+  ContactShadows,
+  PerspectiveCamera,
+} from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 
 import productsList from "@/lib/products.json";
 import productDetails from "@/lib/product_details.json";
+import { Header } from "@/components/Header";
+
+function Model({ url, scale = 1 }: { url: string; scale?: number }) {
+  const { scene } = useGLTF(url);
+  scene.scale.set(scale, scale, scale);
+  scene.position.y = -0.3; // petit ajustement pour centrer verticalement
+  return <primitive object={scene} />;
+}
 
 export default function ProductDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = use(params); // Résout la Promise (Next.js 14+)
+  const { id } = use(params);
 
   const { addItem } = useCart();
 
@@ -24,7 +41,6 @@ export default function ProductDetailPage({
 
   // Récupération des données
   const listItem = productsList.data.find((p: any) => p.id === id);
-
   const detailItem = (productDetails.data as Record<string, any>)?.[id];
 
   // Fallbacks si détails manquants
@@ -50,6 +66,7 @@ export default function ProductDetailPage({
       frameColors: detailItem?.configurations?.frameColors || [],
       lensTypes: detailItem?.configurations?.lensTypes || [],
       thumbnail: listItem.thumbnail || "/images/placeholder.png",
+      threeD: detailItem?.threeD || null,
     };
   }, [listItem, detailItem]);
 
@@ -68,6 +85,8 @@ export default function ProductDetailPage({
     );
   }
 
+  const has3D = !!product.threeD?.modelUrl;
+
   // Valeurs par défaut pour les sélections
   const defaultColor = product.frameColors[0]?.id || "";
   const defaultLens = product.lensTypes[0]?.id || "";
@@ -76,9 +95,11 @@ export default function ProductDetailPage({
   const currentLensId = selectedLensId || defaultLens;
 
   const selectedColor = product.frameColors.find(
-    (c) => c.id === currentColorId,
+    (c: any) => c.id === currentColorId,
   );
-  const selectedLens = product.lensTypes.find((l) => l.id === currentLensId);
+  const selectedLens = product.lensTypes.find(
+    (l: any) => l.id === currentLensId,
+  );
 
   const extraLensPrice = selectedLens?.price || 0;
   const totalPrice = product.basePrice + extraLensPrice;
@@ -104,6 +125,7 @@ export default function ProductDetailPage({
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <Header />
       <main className="flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           {/* Breadcrumb */}
@@ -116,10 +138,52 @@ export default function ProductDetailPage({
           </Link>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Zone visuelle (image + futur essayage virtuel) */}
+            {/* Zone visuelle : 3D si disponible, sinon image */}
             <div className="space-y-6">
               <div className="bg-card rounded-xl overflow-hidden border border-border aspect-square relative">
-                {product.thumbnail && product.thumbnail !== "" ? (
+                {has3D ? (
+                  <Canvas shadows>
+                    <PerspectiveCamera
+                      makeDefault
+                      position={
+                        product.threeD?.camera?.position
+                          ? [
+                              product.threeD.camera.position.x ?? 0,
+                              product.threeD.camera.position.y ?? 0.2,
+                              product.threeD.camera.position.z ?? 2.5,
+                            ]
+                          : [0, 0.2, 2.5]
+                      }
+                      fov={product.threeD?.camera?.fov ?? 45}
+                    />
+                    <ambientLight intensity={0.7} />
+                    <spotLight
+                      position={[5, 10, 5]}
+                      angle={0.4}
+                      penumbra={1}
+                      intensity={1.2}
+                      castShadow
+                    />
+                    <Model
+                      url={product.threeD.modelUrl}
+                      scale={product.threeD.scale || 1}
+                    />
+                    <Environment preset="studio" />
+                    <ContactShadows
+                      position={[0, -0.8, 0]}
+                      opacity={0.6}
+                      scale={10}
+                      blur={2.5}
+                    />
+                    <OrbitControls
+                      enableZoom
+                      enablePan
+                      dampingFactor={0.12}
+                      minPolarAngle={Math.PI / 6}
+                      maxPolarAngle={Math.PI - Math.PI / 6}
+                    />
+                  </Canvas>
+                ) : product.thumbnail && product.thumbnail !== "" ? (
                   <img
                     src={product.thumbnail}
                     alt={product.name}
@@ -131,19 +195,9 @@ export default function ProductDetailPage({
                   </div>
                 )}
               </div>
-
-              {/* CTA principal : Essayer cette monture */}
-              <button
-                type="button"
-                className="w-full py-4 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-3 text-lg"
-                onClick={() => alert("Essayage virtuel à venir...")}
-              >
-                <Eye size={22} />
-                Essayer cette monture
-              </button>
             </div>
 
-            {/* Panneau de configuration */}
+            {/* Panneau de configuration (inchangé) */}
             <div className="space-y-8">
               <div>
                 <p className="text-lg text-muted-foreground">{product.brand}</p>
@@ -166,7 +220,6 @@ export default function ProductDetailPage({
                 <p>{product.description}</p>
               </div>
 
-              {/* Couleurs de monture */}
               {product.frameColors.length > 0 && (
                 <div className="space-y-4">
                   <h3 className="text-lg font-medium">Couleur de la monture</h3>
@@ -198,7 +251,6 @@ export default function ProductDetailPage({
                 </div>
               )}
 
-              {/* Types de verres */}
               {product.lensTypes.length > 0 && (
                 <div className="space-y-4">
                   <h3 className="text-lg font-medium">Type de verres</h3>
@@ -233,7 +285,6 @@ export default function ProductDetailPage({
                 </div>
               )}
 
-              {/* Quantité + Ajouter au panier */}
               <div className="pt-6 border-t border-border space-y-6">
                 <div className="flex items-center gap-6">
                   <div>
@@ -268,7 +319,6 @@ export default function ProductDetailPage({
                 </div>
               </div>
 
-              {/* Infos supplémentaires */}
               {product.materials.length > 0 && (
                 <div className="text-sm text-muted-foreground">
                   Matériaux : {product.materials.join(" • ")}
