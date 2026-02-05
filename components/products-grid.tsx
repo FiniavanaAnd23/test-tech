@@ -4,12 +4,20 @@ import Link from "next/link";
 import productsList from "@/lib/products.json";
 import { Button } from "./ui/button";
 import { Eye, Sparkles, ArrowRight, ShoppingBag, Heart } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import { getFeaturedProducts } from "@/lib/data/products";
+import { Product } from "@/lib/types/product";
 
 export function ProductsGrid() {
-  const featuredProducts = productsList.data.slice(0, 6);
   const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
+
+  const [products, setProducts] = useState<Product[]>([]);
+  console.log(products);
+
+  useEffect(() => {
+    getFeaturedProducts(6).then(setProducts);
+  }, []);
 
   return (
     <section className="bg-background py-20 md:py-28 relative overflow-hidden">
@@ -43,7 +51,7 @@ export function ProductsGrid() {
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-          {featuredProducts.map((product: any, index: number) => {
+          {products.map((product: any, index: number) => {
             const priceNum =
               typeof product.price === "string"
                 ? parseInt(product.price, 10)
@@ -146,7 +154,7 @@ export function ProductsGrid() {
                         </span>
                       )}
                     </div>
-                  
+
                     {/* Additional info */}
                     {has3DView && (
                       <div className="pt-4 border-t border-border/50">
