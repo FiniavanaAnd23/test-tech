@@ -1,0 +1,95 @@
+{
+  "success": true,
+  "count": 10,
+  "data": [
+    {
+      "id": "frame-001",
+      "name": "Monture Optima Classic",
+      "brand": "Optima",
+      "price": 120000,
+      "currency": "MGA",
+      "thumbnail": "/images/frames/optima-classic.png",
+      "isAvailable": true
+    },
+    {
+      "id": "frame-002",
+      "name": "Monture Vision Pro",
+      "brand": "Vision",
+      "price": "150000",
+      "currency": "MGA",
+      "thumbnail": "/images/frames/vision-pro.png",
+      "isAvailable": true
+    },
+    {
+      "id": "frame-003",
+      "name": "Monture Urban Flex",
+      "brand": "Urban",
+      "price": 98000,
+      "currency": "MGA",
+      "thumbnail": "",
+      "isAvailable": true
+    },
+    {
+      "id": "frame-004",
+      "name": null,
+      "brand": "Elite",
+      "price": 175000,
+      "currency": "MGA",
+      "thumbnail": "/images/frames/elite-metal.png",
+      "isAvailable": true
+    },
+    {
+      "id": "frame-005",
+      "name": "Monture LightView Air",
+      "brand": "LightView",
+      "price": -110000,
+      "currency": "MGA",
+      "thumbnail": "/images/frames/lightview-air.png",
+      "isAvailable": true
+    },
+    {
+      "id": "frame-006",
+      "name": "Monture Retro Bold",
+      "brand": "Retro",
+      "price": 135000,
+      "currency": "MGA",
+      "thumbnail": "/images/frames/retro-bold.png",
+      "isAvailable": "false"
+    },
+    {
+      "id": "frame-007",
+      "name": "Monture Smart Vision",
+      "brand": "Smart",
+      "price": 160000,
+      "currency": "EURO",
+      "thumbnail": "/images/frames/smart-vision.png",
+      "isAvailable": true
+    },
+    {
+      "id": "frame-008",
+      "brand": "Pure",
+      "price": 90000,
+      "currency": "MGA",
+      "thumbnail": "/images/frames/pure-minimal.png",
+      "isAvailable": true
+    },
+    {
+      "id": "frame-009",
+      "name": "Monture SportX",
+      "brand": "SportX",
+      "price": 145000,
+      "currency": "MGA",
+      "thumbnail": "/images/frames/sportx.png",
+      "isAvailable": true,
+      "extraField": "should-not-be-here"
+    },
+    {
+      "id": "frame-010",
+      "name": "Monture Prestige Gold",
+      "brand": "Prestige",
+      "price": 220000,
+      "currency": "MGA",
+      "thumbnail": "/images/frames/prestige-gold.png"
+    }
+  ]
+}

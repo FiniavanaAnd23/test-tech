@@ -1,0 +1,80 @@
+{
+  "success": true,
+  "data": {
+    "frame-001": {
+      "id": "frame-001",
+      "name": "Monture Optima Classic",
+      "brand": "Optima",
+      "description": "Monture élégante et légère, idéale pour un usage quotidien.",
+      "price": 120000,
+      "currency": "MGA",
+      "materials": ["Acétate", "Métal"],
+      "dimensions": { "width": 140, "height": 50, "bridge": 18, "unit": "mm" },
+      "configurations": {
+        "frameColors": [
+          { "id": "black", "label": "Noir", "hex": "#000000" },
+          { "id": "brown", "label": "Marron", "hex": "#6f4e37" }
+        ],
+        "lensTypes": [
+          { "id": "standard", "label": "Standard", "price": 0 },
+          { "id": "anti-reflective", "label": "Anti-reflet", "price": 30000 }
+        ]
+      },
+      "threeD": {
+        "modelUrl": "/3d/frames/optima-classic.glb",
+        "scale": 1,
+        "camera": { "position": { "x": 0, "y": 0.2, "z": 2.5 }, "fov": 45 }
+      }
+    },
+
+    "frame-002": {
+      "id": "frame-002",
+      "name": "Monture Vision Pro",
+      "brand": "Vision",
+      "description": "Monture moderne avec design premium et confort renforcé.",
+      "price": 150000,
+      "currency": "MGA",
+      "materials": ["Titane"],
+      "dimensions": { "width": 142, "height": 52, "bridge": 19, "unit": "mm" },
+      "configurations": {
+        "frameColors": [
+          { "id": "silver", "label": "Argent", "hex": "#c0c0c0" },
+          { "id": "dark-gray", "label": "Gris foncé", "hex": "#444444" }
+        ],
+        "lensTypes": [
+          { "id": "blue-light", "label": "Filtre lumière bleue", "price": 45000 }
+        ]
+      },
+      "threeD": {
+        "modelUrl": "/3d/frames/vision-pro.glb",
+        "scale": 1,
+        "camera": { "position": { "x": 0, "y": 0.3, "z": 2.7 }, "fov": 45 }
+      }
+    },
+
+    "frame-003": {
+      "id": "frame-003",
+      "name": "Monture Urban Flex",
+      "brand": "Urban",
+      "description": "Monture souple et résistante, pensée pour un style urbain.",
+      "price": 98000,
+      "currency": "MGA",
+      "materials": ["Plastique flexible"],
+      "dimensions": { "width": 138, "height": 48, "bridge": 17, "unit": "mm" },
+      "configurations": {
+        "frameColors": [
+          { "id": "blue", "label": "Bleu", "hex": "#1e40af" },
+          { "id": "black", "label": "Noir", "hex": "#000000" }
+        ],
+        "lensTypes": [
+          { "id": "standard", "label": "Standard", "price": 0 }
+        ]
+      },
+      "threeD": {
+        "modelUrl": "/3d/frames/urban-flex.glb",
+        "scale": 0.95,
+        "camera": { "position": { "x": 0, "y": 0.2, "z": 2.4 }, "fov": 45 }
+      }
+    }
+  }
+}
