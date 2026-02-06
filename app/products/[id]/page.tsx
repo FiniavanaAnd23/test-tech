@@ -14,16 +14,36 @@ import {
   PerspectiveCamera,
 } from "@react-three/drei";
 import { useGLTF } from "@react-three/drei";
+import * as THREE from "three";
 
 import productsList from "@/lib/products.json";
 import productDetails from "@/lib/product_details.json";
 import { Header } from "@/components/Header";
 
-function Model({ url, scale = 1 }: { url: string; scale?: number }) {
+function Model({
+  url,
+  scale = 1,
+  frameColorHex = "#ffffff",
+}: {
+  url: string;
+  scale?: number;
+  frameColorHex?: string;
+}) {
   const { scene } = useGLTF(url);
-  scene.scale.set(scale, scale, scale);
-  scene.position.y = -0.3; // petit ajustement pour centrer verticalement
-  return <primitive object={scene} />;
+  const clonedScene = scene.clone();
+
+  clonedScene.traverse((child) => {
+    if (child instanceof THREE.Mesh && child.material) {
+      if (child.material.color) {
+        child.material.color.set(frameColorHex);
+      }
+    }
+  });
+
+  clonedScene.scale.set(scale, scale, scale);
+  clonedScene.position.y = -0.3;
+
+  return <primitive object={clonedScene} />;
 }
 
 export default function ProductDetailPage({
@@ -39,11 +59,9 @@ export default function ProductDetailPage({
   const [selectedColorId, setSelectedColorId] = useState<string>("");
   const [selectedLensId, setSelectedLensId] = useState<string>("");
 
-  // Récupération des données
   const listItem = productsList.data.find((p: any) => p.id === id);
   const detailItem = (productDetails.data as Record<string, any>)?.[id];
 
-  // Fallbacks si détails manquants
   const product = useMemo(() => {
     if (!listItem) return null;
 
@@ -87,7 +105,6 @@ export default function ProductDetailPage({
 
   const has3D = !!product.threeD?.modelUrl;
 
-  // Valeurs par défaut pour les sélections
   const defaultColor = product.frameColors[0]?.id || "";
   const defaultLens = product.lensTypes[0]?.id || "";
 
@@ -128,7 +145,6 @@ export default function ProductDetailPage({
       <Header />
       <main className="flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          {/* Breadcrumb */}
           <Link
             href="/products"
             className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8"
@@ -138,7 +154,6 @@ export default function ProductDetailPage({
           </Link>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Zone visuelle : 3D si disponible, sinon image */}
             <div className="space-y-6">
               <div className="bg-card rounded-xl overflow-hidden border border-border aspect-square relative">
                 {has3D ? (
@@ -167,6 +182,7 @@ export default function ProductDetailPage({
                     <Model
                       url={product.threeD.modelUrl}
                       scale={product.threeD.scale || 1}
+                      frameColorHex={selectedColor?.hex || "#ffffff"}
                     />
                     <Environment preset="studio" />
                     <ContactShadows
@@ -197,7 +213,6 @@ export default function ProductDetailPage({
               </div>
             </div>
 
-            {/* Panneau de configuration (inchangé) */}
             <div className="space-y-8">
               <div>
                 <p className="text-lg text-muted-foreground">{product.brand}</p>
